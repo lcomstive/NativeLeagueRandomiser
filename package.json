@@ -1,0 +1,17 @@
+{
+  "name": "league-random-runes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Lewis Comstive",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^24.4.0"
+  },
+  "dependencies": {
+    "lcu-connector": "^2.1.3"
+  }
+}

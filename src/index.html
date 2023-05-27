@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+		<title>Hello World!</title>
+
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<span id="disconnected">
+			<h3>Connecting...</h3>
+		</span>
+		<span id="mainContent">
+			<h1>Hello, <span id="summonerName"></span>!</h1>
+		</span>
+
+		<script src="./renderer.js"></script>
+	</body>
+</html>
