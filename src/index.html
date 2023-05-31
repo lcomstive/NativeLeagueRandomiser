@@ -3,17 +3,29 @@
 	<head>
 		<meta charset="UTF-8">
 		<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-		<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-		<title>Hello World!</title>
+		<meta http-equiv="Content-Security-Policy" content="default-src *;
+															img-src * 'self' data https:;
+															style-src 'self' 'unsafe-inline' *;
+															script-src 'self' 'unsafe-inline'">
 
-		<link rel="stylesheet" href="style.css">
+		<meta http-equiv="Content-Security-Policy" content="default-src *;
+			img-src * 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
+			style-src  'self' 'unsafe-inline' *">
+
+			<title>Hello World!</title>
+
+		<link rel="stylesheet" href="../assets/style.css">
 	</head>
 	<body>
 		<span id="disconnected">
-			<h3>Connecting...</h3>
+			<h3>Waiting for League client</h3>
 		</span>
-		<span id="mainContent">
+		<div id="mainContent">
 			<h1>Hello, <span id="summonerName"></span>!</h1>
+
+			<div id="champion"></div>
+			<button onClick="randomise()">Roll</button>
+			<div id="runes"></div>
 		</span>
 
 		<script src="./renderer.js"></script>

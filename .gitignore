@@ -29,3 +29,9 @@ pids
 
 # Output of 'npm pack'
 *.tgz
+
+# Mac OS meta file
+.DS_Store
+
+# DDragon Files
+assets/img/

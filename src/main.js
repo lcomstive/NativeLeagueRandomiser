@@ -5,7 +5,7 @@ const Summoner = require('./summoner')
 
 // Allow self-signed certificates for HTTPS requests.
 // League client uses a self-signed certificate, so this is required
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+// process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
 
 var mainWindow = undefined
 
@@ -49,4 +49,3 @@ app.on('window-all-closed', () =>
 	if(process.platform !== 'darwin')
 		app.quit()
 })
-

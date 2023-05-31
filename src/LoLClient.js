@@ -9,9 +9,8 @@ var clientData = {}
 connector.on('connect', data =>
 {
 	clientData = data
-	clientData.authString = btoa(`${clientData.username}:${clientData.password}`)
 	console.log(`Found League client on port ${clientData.port}`)
-	// console.log(data)
+	clientData.authString = btoa(`${clientData.username}:${clientData.password}`)
 })
 connector.on('disconnect', () => clientData = {})
 
@@ -26,12 +25,12 @@ CreateRequest = (url, type, callback) =>
 		port: clientData.port,
 		path: url,
 		method: type,
+		rejectUnauthorized: false,
 		headers:
 		{
 			'Authorization': `Basic ${clientData.authString}`,
 			'Content-Type': 'application/json',
 			'Accept': '*/*',
-			'User-Agent': 'insomnia/7.1.1'
 		}
 	}
 	// console.log(options)
@@ -42,19 +41,13 @@ CreateRequest = (url, type, callback) =>
 		// console.log(`Headers: ${JSON.stringify(res.headers)}`)
 
 		res.on('data', (chunk) => output += chunk)
-		res.on('end', () =>
-		{
-			callback(output.length > 0 ? JSON.parse(output) : {})
-
-			// console.log('Data: ' + output)
-		})
+		res.on('end', () => callback(output.length > 0 ? JSON.parse(output) : {}))
 	})
 
 	request.on('error', (err) => { throw new Error(err) })
 
 	return request
-},
-
+}
 
 module.exports =
 {
