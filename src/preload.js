@@ -9,6 +9,7 @@ const IPCCalls =
 	getSummonerData: () => ipcRenderer.invoke('getSummonerData'),
 
 	clientGet:  (url) => ipcRenderer.invoke('lolClientGet', url),
+	clientPut:  (url, data) => ipcRenderer.invoke('lolClientPut', url, data),
 	clientPost: (url, data) => ipcRenderer.invoke('lolClientPost', url, data),
 
 	// Events

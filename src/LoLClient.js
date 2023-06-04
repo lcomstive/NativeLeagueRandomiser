@@ -59,5 +59,6 @@ module.exports =
 	Connector: connector,
 
 	Get:  (url) 		=> new Promise((resolve) => CreateRequest(url, 'GET',  resolve).end()),
-	Post: (url, data) 	=> new Promise((resolve) => CreateRequest(url, 'PUT', resolve).end(JSON.stringify(data)))
+	Put:  (url, data) 	=> new Promise((resolve) => CreateRequest(url, 'PUT', resolve).end(JSON.stringify(data))),
+	Post: (url, data) 	=> new Promise((resolve) => CreateRequest(url, 'POST', resolve).end(JSON.stringify(data)))
 }

@@ -64,6 +64,7 @@ app.whenReady().then(() =>
 	ipcMain.handle('getSummonerData', () => Summoner.summoner)
 
 	ipcMain.handle('lolClientGet',  (_, url) => LoLClient.Get(url))
+	ipcMain.handle('lolClientPut',  (_, url, data) => LoLClient.Put(url, data))
 	ipcMain.handle('lolClientPost', (_, url, data) => LoLClient.Post(url, data))
 })
 

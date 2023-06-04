@@ -159,7 +159,7 @@ exportRunes = async () =>
 	runes.selectedPerkIds = summoner.tempRunes.perkIds
 
 	// Upload to League client
-	await window.ipc.clientPost(`/lol-perks/v1/pages/${runes.id}`, runes)
+	await window.ipc.clientPut(`/lol-perks/v1/pages/${runes.id}`, runes)
 }
 
 onConnectedToClient = async (summonerData) =>
