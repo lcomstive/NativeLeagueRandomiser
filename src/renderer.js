@@ -53,17 +53,21 @@ randomChampion = (randomSkin = true) =>
 randomRunes = () =>
 {
 	let output = {}
-	summoner.tempRunes = []
-
+	summoner.tempRunes = {
+		primaryStyleId: 0,
+		secondaryStyleId: 0,
+		perkIds: []
+	}
 	// Select primary keystone
 	output.primaryKeystone = random(runes)
+	summoner.tempRunes.primaryStyleId = output.primaryKeystone.id
 
 	output.primarySlots = []
 	for(let i = 0; i < 4; i++)
 	{
 		let perk = random(output.primaryKeystone.slots[i].perks)
 		output.primarySlots.push(perk)
-		summoner.tempRunes.push(perk)
+		summoner.tempRunes.perkIds.push(perk)
 	}
 
 	// Select secondary keystone
@@ -71,12 +75,13 @@ randomRunes = () =>
 	do output.secondaryKeystone = random(runes)
 	while(output.primaryKeystone.id == output.secondaryKeystone.id)
 
+	summoner.tempRunes.secondaryStyleId = output.secondaryKeystone.id
 	output.secondarySlots = []
 	for(let i = 0; i < 2; i++)
 	{
 		let perk = random(output.secondaryKeystone.slots[i + 1].perks)
 		output.secondarySlots.push(perk)
-		summoner.tempRunes.push(perk)
+		summoner.tempRunes.perkIds.push(perk)
 	}
 
 	// Select stat mods
@@ -85,7 +90,7 @@ randomRunes = () =>
 	{
 		let mod = random(output.secondaryKeystone.slots[i + 4].perks)
 		output.statMods.push(mod)
-		summoner.tempRunes.push(mod)
+		summoner.tempRunes.perkIds.push(mod)
 	}
 
 	return output
@@ -141,13 +146,20 @@ updateRuneExporter = () =>
 	document.getElementById('runeExporter').innerHTML = html
 }
 
-exportRunes = () =>
+exportRunes = async () =>
 {
 	let runes = summoner.runes[Number(document.getElementById('runeSelector').value)]
 	console.log(`Exporting to '${runes.name}'`)
 
 	console.log(runes.selectedPerkIds)
 	console.log(summoner.tempRunes)
+
+	runes.primaryStyleId = summoner.tempRunes.primaryStyleId
+	runes.subStyleId = summoner.tempRunes.secondaryStyleId
+	runes.selectedPerkIds = summoner.tempRunes.perkIds
+
+	// Upload to League client
+	await window.ipc.clientPost(`/lol-perks/v1/pages/${runes.id}`, runes)
 }
 
 onConnectedToClient = async (summonerData) =>
@@ -159,6 +171,7 @@ onConnectedToClient = async (summonerData) =>
 	changePage('mainContent')
 
 	let champions = await window.ipc.clientGet(`/lol-champions/v1/inventories/${summoner.summonerId}/champions`)
+	console.log(champions)
 	summoner.champions = champions.filter(champ => champ.active && (champ.freeToPlay || champ.ownership.owned))
 	console.log(summoner.champions)
 
@@ -177,9 +190,11 @@ onConnectedToClient = async (summonerData) =>
 	randomise()
 }
 
+onDisconnectedFromClient = () => changePage('disconnected')
+
 window.addEventListener('DOMContentLoaded', async () =>
 {
-	changePage('disconnected')
+	onDisconnectedFromClient()
 
 	let summonerData = await window.ipc.getSummonerData()
 	if(summonerData && summonerData.summonerId)
@@ -187,3 +202,4 @@ window.addEventListener('DOMContentLoaded', async () =>
 })
 	
 window.ipc.onConnectedToClient(onConnectedToClient)
+window.ipc.onDisconnectedFromClient(onDisconnectedFromClient)

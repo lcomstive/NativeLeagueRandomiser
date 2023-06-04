@@ -36,9 +36,30 @@ app.whenReady().then(() =>
 			createWindow()
 	})
 
-	LoLClient.Connector.on('connect', _ =>
-		Summoner.refreshSummonerData()
-			.then(summoner => mainWindow.webContents.send('summonerDataAvailable', summoner)))
+	LoLClient.Connector.on('connect', async _ =>
+	{
+		let attempts = 0
+		const MaxAttempts = 4
+		const AttemptDelay = 1000 // milliseconds. Time between attempting to get summoner data
+		while(attempts < MaxAttempts)
+		{
+			// Get summoner data from client
+			let summoner = await Summoner.refreshSummonerData()
+
+			// Check for valid summoner data
+			if(summoner && summoner.httpStatus != 404)
+			{
+				mainWindow.webContents.send('summonerDataAvailable', summoner)
+				break
+			}
+			
+			// Wait one second before trying again
+			await new Promise(resolve => setTimeout(resolve, AttemptDelay))
+			attempts++
+		}
+	})
+
+	LoLClient.Connector.on('disconnect', _ => mainWindow.webContents.send('disconnectedFromClient'))
 
 	ipcMain.handle('getSummonerData', () => Summoner.summoner)
 

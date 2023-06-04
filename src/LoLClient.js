@@ -1,9 +1,9 @@
 const path = require('path')
 const https = require('https')
 const LCUConnector = require('lcu-connector')
-const { BrowserWindow } = require('electron')
 
 const connector = new LCUConnector()
+const RetryDelay = 1000 // Milliseconds. Time between attempting request again
 var clientData = {}
 
 connector.on('connect', data =>
@@ -17,7 +17,7 @@ connector.on('disconnect', () => clientData = {})
 // Connect to League client
 connector.start()
 
-CreateRequest = (url, type, callback) =>
+CreateRequest = (url, type, callback, retryAttempts = 3) =>
 {
 	let options =
 	{
@@ -41,10 +41,15 @@ CreateRequest = (url, type, callback) =>
 		// console.log(`Headers: ${JSON.stringify(res.headers)}`)
 
 		res.on('data', (chunk) => output += chunk)
-		res.on('end', () => callback(output.length > 0 ? JSON.parse(output) : {}))
+		res.on('end', async () => callback(output.length > 0 ? JSON.parse(output) : {}))
 	})
 
-	request.on('error', (err) => { throw new Error(err) })
+	request.on('error', (err) =>
+	{
+		console.error(err)
+		console.error('Disconnecting from League client')
+		connector.stop()
+	})
 
 	return request
 }
@@ -54,5 +59,5 @@ module.exports =
 	Connector: connector,
 
 	Get:  (url) 		=> new Promise((resolve) => CreateRequest(url, 'GET',  resolve).end()),
-	Post: (url, data) 	=> new Promise((resolve) => CreateRequest(url, 'POST', resolve).end(data))
+	Post: (url, data) 	=> new Promise((resolve) => CreateRequest(url, 'PUT', resolve).end(JSON.stringify(data)))
 }
