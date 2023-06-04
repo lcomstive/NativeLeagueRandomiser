@@ -53,11 +53,18 @@ randomChampion = (randomSkin = true) =>
 randomRunes = () =>
 {
 	let output = {}
+	summoner.tempRunes = []
+
 	// Select primary keystone
 	output.primaryKeystone = random(runes)
+
 	output.primarySlots = []
 	for(let i = 0; i < 4; i++)
-		output.primarySlots.push(random(output.primaryKeystone.slots[i].perks))
+	{
+		let perk = random(output.primaryKeystone.slots[i].perks)
+		output.primarySlots.push(perk)
+		summoner.tempRunes.push(perk)
+	}
 
 	// Select secondary keystone
 	output.secondaryKeystone = {}
@@ -66,12 +73,20 @@ randomRunes = () =>
 
 	output.secondarySlots = []
 	for(let i = 0; i < 2; i++)
-		output.secondarySlots.push(random(output.secondaryKeystone.slots[i + 1].perks))
+	{
+		let perk = random(output.secondaryKeystone.slots[i + 1].perks)
+		output.secondarySlots.push(perk)
+		summoner.tempRunes.push(perk)
+	}
 
 	// Select stat mods
 	output.statMods = []
 	for(let i = 0; i < 3; i++)
-		output.statMods.push(random(output.secondaryKeystone.slots[i + 4].perks))
+	{
+		let mod = random(output.secondaryKeystone.slots[i + 4].perks)
+		output.statMods.push(mod)
+		summoner.tempRunes.push(mod)
+	}
 
 	return output
 }
@@ -116,6 +131,25 @@ randomise = async () =>
 	InvisibleElements.forEach(element => document.getElementById(element).classList.remove('invisible'))
 }
 
+updateRuneExporter = () =>
+{
+	let html = '<select id="runeSelector">'
+	for(let i = 0; i < summoner.runes.length; i++)
+		html += `<option value="${i}">${summoner.runes[i].name}</option>`
+	html += '</select><button onClick="exportRunes()">Export</button>'
+	
+	document.getElementById('runeExporter').innerHTML = html
+}
+
+exportRunes = () =>
+{
+	let runes = summoner.runes[Number(document.getElementById('runeSelector').value)]
+	console.log(`Exporting to '${runes.name}'`)
+
+	console.log(runes.selectedPerkIds)
+	console.log(summoner.tempRunes)
+}
+
 onConnectedToClient = async (summonerData) =>
 {
 	summoner = summonerData
@@ -130,6 +164,7 @@ onConnectedToClient = async (summonerData) =>
 
 	summoner.runes = await window.ipc.clientGet(`/lol-perks/v1/pages`)
 	console.log(summoner.runes)
+	updateRuneExporter()
 
 	runes = await window.ipc.clientGet('/lol-perks/v1/styles')
 	console.log(runes)
