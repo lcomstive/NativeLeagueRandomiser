@@ -108,6 +108,7 @@ randomise = async () =>
 
 	/// CHAMPION ///
 	let championData = randomChampion()
+	summoner.tempChamp = championData
 	let skinPath = `../assets/img/champion/tiles/${championData.champion.alias}_${championData.skinPathIndex}.jpg`
 	
 	// Set champion element data
@@ -141,25 +142,58 @@ updateRuneExporter = () =>
 	let html = '<select id="runeSelector">'
 	for(let i = 0; i < summoner.runes.length; i++)
 		html += `<option value="${i}">${summoner.runes[i].name}</option>`
-	html += '</select><button onClick="exportRunes()">Export</button>'
+	html += '</select><button onClick="exportRunes()" id="exportButton">Export</button>'
 	
 	document.getElementById('runeExporter').innerHTML = html
 }
 
 exportRunes = async () =>
 {
+	let exportButton = document.getElementById('exportButton')
+	exportButton.disabled = true
+
 	let runes = summoner.runes[Number(document.getElementById('runeSelector').value)]
-	console.log(`Exporting to '${runes.name}'`)
-
-	console.log(runes.selectedPerkIds)
-	console.log(summoner.tempRunes)
-
+	
 	runes.primaryStyleId = summoner.tempRunes.primaryStyleId
 	runes.subStyleId = summoner.tempRunes.secondaryStyleId
 	runes.selectedPerkIds = summoner.tempRunes.perkIds
 
 	// Upload to League client
 	await window.ipc.clientPut(`/lol-perks/v1/pages/${runes.id}`, runes)
+
+	// Check if in champ select screen
+	let champSelectSession = await window.ipc.clientGet('/lol-champ-select/v1/session')
+	if(champSelectSession.errorCode == 'RPC_ERROR')
+	{
+		exportButton.disabled = false
+		return // Not in champ select
+	}
+	
+	// Find action for local player
+	let action = champSelectSession.actions[0].find(x => x.type == 'pick' && x.actorCellId == champSelectSession.localPlayerCellId)
+	if(action.completed)
+	{
+		exportButton.disabled = false
+		return // Already picked champion
+	}
+
+	let response = await window.ipc.clientPatch(`/lol-champ-select/v1/session/actions/${action.id}`, {
+		championId: summoner.tempChamp.champion.id,
+		completed: true
+	})
+	if(response.errorCode) console.log(response)
+
+	// Select skin
+	response = await window.ipc.clientPatch('/lol-champ-select/v1/session/my-selection', {
+		selectedSkinId: summoner.tempChamp.champion.skins[summoner.tempChamp.skin].id
+	})
+	if(response.errorCode) console.log(response)
+
+	// Set rune page
+	response = await window.ipc.clientPut('/lol-perks/v1/currentpage', runes.id)
+	if(response.errorCode) console.log(response)
+	
+	exportButton.disabled = false
 }
 
 onConnectedToClient = async (summonerData) =>

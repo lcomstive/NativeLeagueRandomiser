@@ -8,9 +8,10 @@ const IPCCalls =
 	// Functions
 	getSummonerData: () => ipcRenderer.invoke('getSummonerData'),
 
-	clientGet:  (url) => ipcRenderer.invoke('lolClientGet', url),
-	clientPut:  (url, data) => ipcRenderer.invoke('lolClientPut', url, data),
-	clientPost: (url, data) => ipcRenderer.invoke('lolClientPost', url, data),
+	clientGet:   (url) => ipcRenderer.invoke('lolClientGet', url),
+	clientPut:   (url, data) => ipcRenderer.invoke('lolClientPut',   url, data),
+	clientPost:  (url, data) => ipcRenderer.invoke('lolClientPost',  url, data),
+	clientPatch: (url, data) => ipcRenderer.invoke('lolClientPatch', url, data),
 
 	// Events
 	onConnectedToClient: (callback) => ipcRenderer.on('summonerDataAvailable', (_, data) => callback(data)),

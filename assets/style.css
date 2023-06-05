@@ -33,6 +33,11 @@ button:hover
 	transition: 0.1s ease-in-out;
 }
 
+button:disabled
+{
+	color: #7d6a45;
+}
+
 a, a:visited
 {
 	color: white;
