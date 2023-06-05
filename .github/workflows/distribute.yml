@@ -29,6 +29,6 @@ jobs:
     - name: Build
       run: |
         npm i
-        npm run dist
+        npm run publish
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
