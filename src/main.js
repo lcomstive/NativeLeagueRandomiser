@@ -4,6 +4,9 @@ const LoLClient = require('./LoLClient')
 const Summoner = require('./summoner')
 const fs = require('fs')
 
+// Auto-update
+const { autoUpdater } = require('electron-updater')
+
 // Allow self-signed certificates for HTTPS requests.
 // League client uses a self-signed certificate, so this is required
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0
@@ -26,6 +29,19 @@ const createWindow = () =>
 }
 
 app.whenReady()
+.then(() =>
+{
+	// Check for updates
+	log.transports.file.level = 'debug'
+	autoUpdater.logger = require('electron-log')
+
+	autoUpdater.on('error', err => console.error(err))
+	autoUpdater.on('update-available', info => console.log(`Update available\n\n${info}`))
+	autoUpdater.on('download-progress', (progress, bytesPerSecond, percent, total, transferred) => console.log(`Progress: ${progress}%`))
+	autoUpdater.on('update-downloaded', info => console.log(`Update downloaded: ${info}`))
+
+	autoUpdater.checkForUpdatesAndNotify()
+})
 .then(() =>
 {
 	createWindow()

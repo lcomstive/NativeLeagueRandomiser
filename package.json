@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "publish": "electron-builder"
   },
   "author": "Lewis Comstive",
   "license": "ISC",
@@ -21,6 +22,11 @@
   "build": {
     "appId": "com.lewiscomstive.${name}",
     "productName": "League Random Runes",
-    "copyright": "Copyright © 2023 ${author}"
+    "copyright": "Copyright © 2023 ${author}",
+    "win": {
+      "target": "portable",
+      "publish": [ "github" ]
+    },
+    "mac": { "publish": [ "github" ]}
   }
 }
