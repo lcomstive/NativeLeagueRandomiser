@@ -24,7 +24,9 @@ jobs:
       with:
         node-version: latest
 
-    # Build and release (if tagged commit)
-    - run: |
+    - name: Build
+      run: |
         npm i
         npm run dist
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
