@@ -27,6 +27,10 @@
       "target": "portable",
       "publish": [ "github" ]
     },
-    "mac": { "publish": [ "github" ]}
+    "mac": { "publish": [ "github" ]},
+    "linux": {
+      "target": "tar.gz",
+      "publish": [ "github" ]
+    }
   }
 }
