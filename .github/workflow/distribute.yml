@@ -1,0 +1,30 @@
+# To update version and release
+# - Update version in `package.json`
+# - Commit change (e.g. `commit -am v1.2.3`)
+# - Tag commit (e.g. `git tag v1.2.3`)
+# - Push to git (`git push && git push --tags`)
+
+name: Electron Build
+
+on: push
+
+jobs:
+  release:
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        os: [ macos-latest, ubuntu-latest, windows-latest ]
+    
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v3
+
+    - name: Build and Release App
+      uses: samuelmeuli/action-electron-builder@v1
+      with:
+        # GitHub token, automatically provided to the action
+        github_token: ${{ secrets.github_token }}
+
+        # If the commit is tagged with a version (e.g. "v1.0.0"),
+        # release the app after building
+        release: ${{ startsWith(github.ref, 'refs/tags/v') }}

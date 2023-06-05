@@ -37,4 +37,4 @@ pids
 assets/img/
 
 # Build files
-./dist/
+dist/
