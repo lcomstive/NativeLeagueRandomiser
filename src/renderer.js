@@ -207,9 +207,6 @@ window.addEventListener('DOMContentLoaded', async () =>
 		onConnectedToClient(summonerData)
 
 	loadSettings()
-
-	// TEMP //
-	changePage('settings')
 })
 
 window.addEventListener('keyup', (event) =>

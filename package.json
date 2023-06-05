@@ -4,15 +4,23 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "author": "Lewis Comstive",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^24.4.0"
+    "electron": "^24.4.0",
+    "electron-builder": "^24.4.0"
   },
   "dependencies": {
     "chokidar": "^3.5.3",
     "lcu-connector": "^2.1.3"
+  },
+  "build": {
+    "appId": "com.lewiscomstive.${name}",
+    "productName": "League Random Runes",
+    "copyright": "Copyright © 2023 ${author}"
   }
 }
