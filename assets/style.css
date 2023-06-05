@@ -56,6 +56,40 @@ input { color: white; }
 
 ::placeholder { color: rgb(149, 149, 149); }
 
+input[type="checkbox"] {
+	/* Remove default style */
+	margin: 0;
+	appearance: none;
+	-webkit-appearance: none;
+
+	/* Add custom style */
+	width: 1.5em;
+	height: 1.5em;
+	margin: auto -2.5px;
+
+	display: grid;
+	place-content: center;
+
+	color: #c89b3c;
+	background-color: #31302c;
+	border-radius: 0;
+	border: 1px solid #c89b3c;
+}
+
+input[type="checkbox"]::before
+{
+	content: "";
+	width: 0.65em;
+	height: 0.65em;
+	transform: scale(0);
+	transition: 75ms transform ease-in-out;
+	box-shadow: inset 1em 1em #c89b3c;
+
+	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+input[type="checkbox"]:checked::before { transform: scale(1); }
+
 /* General Classes */
 .subtext
 {
@@ -69,17 +103,35 @@ input { color: white; }
 	transition: all 0.25s ease-in-out;
 }
 
-#mainContent
+.navButton
 {
+	color: #c8a96b;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 40px;
+	height: 40px;
+	font-size: 25px;
+	padding: 0;
+}
+
+/* Pages */
+body > span
+{
+	visibility: hidden;
+	opacity: 0;
+	transition: 100ms opacity ease-in;
+
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
-
-/* Pages */
-body > span { visibility: hidden; }
-.selectedPage { visibility: visible; }
+.selectedPage
+{
+	opacity: 1.0;
+	visibility: visible;
+}
 
 /* Champion */
 #championIcon
@@ -150,6 +202,22 @@ body > span { visibility: hidden; }
 	width: 90vw;
 
 	overflow-x: hidden;
+}
+
+/* Settings Page */
+#settings
+{
+	display: grid;
+	grid-template-columns: 1em auto;
+	gap: 0.5em;
+	text-align: left;
+}
+
+#settings button
+{
+	width: 40px;
+	height: 40px;
+	padding: 0;
 }
 
 /* Disconnected screen */

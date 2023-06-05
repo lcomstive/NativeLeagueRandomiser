@@ -86,7 +86,7 @@ randomise = async () =>
 	await new Promise(r => setTimeout(r, FadeAnimationTime));
 
 	/// CHAMPION ///
-	let championData = randomChampion()
+	let championData = randomChampion(Settings.randomiseSkin)
 	summoner.tempChamp = championData
 	let skinPath = `../assets/img/champion/tiles/${championData.champion.alias}_${championData.skinPathIndex}.jpg`
 	
@@ -156,7 +156,7 @@ exportRunes = async () =>
 
 	let response = await window.ipc.clientPatch(`/lol-champ-select/v1/session/actions/${action.id}`, {
 		championId: summoner.tempChamp.champion.id,
-		completed: true
+		completed: Settings.autoLockInChamp
 	})
 	if(response.errorCode) console.log(response)
 
@@ -205,6 +205,11 @@ window.addEventListener('DOMContentLoaded', async () =>
 	let summonerData = await window.ipc.getSummonerData()
 	if(summonerData && summonerData.summonerId)
 		onConnectedToClient(summonerData)
+
+	loadSettings()
+
+	// TEMP //
+	changePage('settings')
 })
 
 window.addEventListener('keyup', (event) =>

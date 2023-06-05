@@ -7,6 +7,8 @@ const IPCCalls =
 {
 	// Functions
 	getSummonerData: () => ipcRenderer.invoke('getSummonerData'),
+	saveSettings: (settings) => ipcRenderer.invoke('saveSettings', settings),
+	loadSettings: () => ipcRenderer.invoke('loadSettings'),
 
 	clientGet:   (url) => ipcRenderer.invoke('lolClientGet', url),
 	clientPut:   (url, data) => ipcRenderer.invoke('lolClientPut',   url, data),

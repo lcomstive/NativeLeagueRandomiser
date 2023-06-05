@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const path = require('path')
 const LoLClient = require('./LoLClient')
 const Summoner = require('./summoner')
+const fs = require('fs')
 
 // Allow self-signed certificates for HTTPS requests.
 // League client uses a self-signed certificate, so this is required
@@ -68,6 +69,11 @@ app.whenReady()
 	ipcMain.handle('lolClientPut',   (_, url, data) => LoLClient.Put(url, data))
 	ipcMain.handle('lolClientPost',  (_, url, data) => LoLClient.Post(url, data))
 	ipcMain.handle('lolClientPatch', (_, url, data) => LoLClient.Patch(url, data))
+
+	let saveFilePath = `${app.getPath('userData')}/settings.json`
+	console.log(`Save file: ${saveFilePath}`)
+	ipcMain.handle('saveSettings', (_, settings) =>	fs.writeFileSync(saveFilePath, JSON.stringify(settings)))
+	ipcMain.handle('loadSettings', (_) => JSON.parse(fs.readFileSync(saveFilePath)))
 })
 
 app.on('window-all-closed', () =>
