@@ -2,28 +2,6 @@ let runes = {}
 var summoner = {}
 let runeData = new Map()
 
-const changePage = (selectedPage) =>
-{
-	for(let i = 0; i < document.body.children.length; i++)
-	{
-		var element = document.body.children[i]
-		if(element.id == selectedPage)
-			element.classList.add('selectedPage')
-		else
-			element.classList.remove('selectedPage')
-	}
-
-	console.log(`Page set to '${selectedPage}'`)
-}
-
-const replaceText = (selector, text) =>
-{
-	const element = document.getElementById(selector)
-	if(element) element.innerText = text
-}
-
-random = (inputArray) => inputArray[Math.floor(Math.random() * inputArray.length)]
-
 /*
 	Chooses a champion at random and returns an object containing champion data and skin index.
 	If `randomSkin` is false, skin selected is base skin (index 0)
@@ -99,12 +77,13 @@ randomRunes = () =>
 runeIconPath = (runeID) => runeData.get(runeID).iconPath.replace('/lol-game-data/assets/v1', '../assets/img')
 
 const InvisibleElements = [ 'champion', 'runes' ]
+const FadeAnimationTime = 200 // Milliseconds
 randomise = async () =>
 {
 	InvisibleElements.forEach(element => document.getElementById(element).classList.add('invisible'))
 
 	// Sleep
-	await new Promise(r => setTimeout(r, 200));
+	await new Promise(r => setTimeout(r, FadeAnimationTime));
 
 	/// CHAMPION ///
 	let championData = randomChampion()
@@ -119,13 +98,11 @@ randomise = async () =>
 	let runes = randomRunes()
 	let runeElement = document.getElementById('runes')
 
-	let html = `<div id="primaryRunes">`
-	html += `<img src=${runeIconPath(runes.primaryKeystone.id)} />`
+	let html = `<div id="primaryRunes"><img src=${runeIconPath(runes.primaryKeystone.id)} />`
 	runes.primarySlots.forEach(slot => html += `<img src=${runeIconPath(slot)} />`)
 	html += `</div>`
 
-	html += `<div id="secondaryRunes">`
-	html += `<img src=${runeIconPath(runes.secondaryKeystone.id)} />`
+	html += `<div id="secondaryRunes"><img src=${runeIconPath(runes.secondaryKeystone.id)} />`
 	runes.secondarySlots.forEach(slot => html += `<img src=${runeIconPath(slot)} />`)
 
 	html += `<div id="statMods">`
@@ -199,22 +176,17 @@ exportRunes = async () =>
 onConnectedToClient = async (summonerData) =>
 {
 	summoner = summonerData
-	console.log(summoner)
-
+	
 	replaceText('summonerName', summoner.displayName)
 	changePage('mainContent')
 
 	let champions = await window.ipc.clientGet(`/lol-champions/v1/inventories/${summoner.summonerId}/champions`)
-	console.log(champions)
 	summoner.champions = champions.filter(champ => champ.active && (champ.freeToPlay || champ.ownership.owned))
-	console.log(summoner.champions)
-
+	
 	summoner.runes = await window.ipc.clientGet(`/lol-perks/v1/pages`)
-	console.log(summoner.runes)
 	updateRuneExporter()
 
 	runes = await window.ipc.clientGet('/lol-perks/v1/styles')
-	console.log(runes)
 	runes.forEach(rune => runeData.set(rune.id, rune))
 
 	// Get rune data
@@ -234,6 +206,13 @@ window.addEventListener('DOMContentLoaded', async () =>
 	if(summonerData && summonerData.summonerId)
 		onConnectedToClient(summonerData)
 })
-	
+
+window.addEventListener('keyup', (event) =>
+{
+	if(event.key == ' ')
+		randomise()
+})
+
+window.ipc.onRandomise(randomise)
 window.ipc.onConnectedToClient(onConnectedToClient)
 window.ipc.onDisconnectedFromClient(onDisconnectedFromClient)

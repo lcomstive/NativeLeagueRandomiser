@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
 const path = require('path')
 const LoLClient = require('./LoLClient')
 const Summoner = require('./summoner')
@@ -26,7 +26,8 @@ const createWindow = () =>
 	mainWindow.webContents.openDevTools()
 }
 
-app.whenReady().then(() =>
+app.whenReady()
+.then(() =>
 {
 	createWindow()
 

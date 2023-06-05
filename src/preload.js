@@ -14,6 +14,7 @@ const IPCCalls =
 	clientPatch: (url, data) => ipcRenderer.invoke('lolClientPatch', url, data),
 
 	// Events
+	onRandomise: (callback) => ipcRenderer.on('randomise', (_) => callback()),
 	onConnectedToClient: (callback) => ipcRenderer.on('summonerDataAvailable', (_, data) => callback(data)),
 	onDisconnectedFromClient: (callback) => ipcRenderer.on('disconnectedFromClient', (_) => callback())
 }
