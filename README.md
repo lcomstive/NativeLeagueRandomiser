@@ -16,11 +16,10 @@ Generates a random champion and runes for a player to try out, this is intended 
 * [x] Export runes to League client
 * [x] Set active rune page, lock-in champion and skin in champ select
 * [x] Settings page
-* [ ] Remove menu bar
 * [ ] History of rolls
 * [ ] Random summoner spells
 * [ ] Random mythic item recommendation
-* [ ] Create more randomness, as some champins roll more than others or twice in a row
+* [ ] Create more randomness, as some champions roll more than others or twice in a row
 
 ## License
 This repository is released under the [ISC License](./LICENSE.md)
