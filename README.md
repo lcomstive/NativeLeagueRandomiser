@@ -10,5 +10,17 @@ Generates a random champion and runes for a player to try out, this is intended 
 	- You should have the folder structure so that this path is valid: `<repo>/assets/img/champion/tiles/Aatrox_0.jpg`
  - Run `node start`
 
+## Roadmap
+* [x] Randomised runes
+* [x] Randomised champions and skins, using what is available on the logged-in League client
+* [x] Export runes to League client
+* [x] Set active rune page, lock-in champion and skin in champ select
+* [x] Settings page
+* [ ] Remove menu bar
+* [ ] History of rolls
+* [ ] Random summoner spells
+* [ ] Random mythic item recommendation
+* [ ] Create more randomness, as some champins roll more than others or twice in a row
+
 ## License
 This repository is released under the [ISC License](./LICENSE.md)

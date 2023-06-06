@@ -1,11 +1,8 @@
-const { app, BrowserWindow, ipcMain, globalShortcut } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const LoLClient = require('./LoLClient')
 const Summoner = require('./summoner')
 const fs = require('fs')
-
-// Auto-update
-const { autoUpdater } = require('electron-updater')
 
 // Allow self-signed certificates for HTTPS requests.
 // League client uses a self-signed certificate, so this is required
@@ -25,25 +22,11 @@ const createWindow = () =>
 		}
 	})
 
+	mainWindow.removeMenu()
 	mainWindow.loadFile(path.join(__dirname, 'index.html'))
 }
 
 app.whenReady()
-.then(() =>
-{
-	// Check for updates
-	const log = require('electron-log')
-	log.transports.file.level = 'debug'
-	autoUpdater.logger = log
-
-	autoUpdater.on('error', err => console.error(err))
-	autoUpdater.on('update-available', info => console.log(`Update available\n\n${info}`))
-	autoUpdater.on('download-progress', (progress, bytesPerSecond, percent, total, transferred) => console.log(`Progress: ${progress}%`))
-	autoUpdater.on('update-downloaded', info => console.log(`Update downloaded: ${info}`))
-
-	try { autoUpdater.checkForUpdatesAndNotify() }
-	catch(err) { console.log(`Failed to update - ${err}`) }
-})
 .then(() =>
 {
 	createWindow()
