@@ -32,15 +32,17 @@ app.whenReady()
 .then(() =>
 {
 	// Check for updates
+	const log = require('electron-log')
 	log.transports.file.level = 'debug'
-	autoUpdater.logger = require('electron-log')
+	autoUpdater.logger = log
 
 	autoUpdater.on('error', err => console.error(err))
 	autoUpdater.on('update-available', info => console.log(`Update available\n\n${info}`))
 	autoUpdater.on('download-progress', (progress, bytesPerSecond, percent, total, transferred) => console.log(`Progress: ${progress}%`))
 	autoUpdater.on('update-downloaded', info => console.log(`Update downloaded: ${info}`))
 
-	autoUpdater.checkForUpdatesAndNotify()
+	try { autoUpdater.checkForUpdatesAndNotify() }
+	catch(err) { console.log(`Failed to update - ${err}`) }
 })
 .then(() =>
 {
@@ -92,6 +94,6 @@ app.whenReady()
 
 app.on('window-all-closed', () =>
 {
-	if(process.platform !== 'darwin')
+	// if(process.platform !== 'darwin')
 		app.quit()
 })
