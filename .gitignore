@@ -33,8 +33,5 @@ pids
 # Mac OS meta file
 .DS_Store
 
-# DDragon files
-assets/img/
-
 # Build files
 dist/

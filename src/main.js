@@ -10,6 +10,12 @@ const fs = require('fs')
 
 var mainWindow = undefined
 
+const DefaultSettings =
+{
+	randomiseSkin: true,
+	autoLockInChamp: true
+}
+
 const createWindow = () =>
 {
 	mainWindow = new BrowserWindow({
@@ -72,7 +78,8 @@ app.whenReady()
 	let saveFilePath = `${app.getPath('userData')}/settings.json`
 	console.log(`Save file: ${saveFilePath}`)
 	ipcMain.handle('saveSettings', (_, settings) =>	fs.writeFileSync(saveFilePath, JSON.stringify(settings)))
-	ipcMain.handle('loadSettings', (_) => JSON.parse(fs.readFileSync(saveFilePath)))
+	ipcMain.handle('loadSettings', (_) =>
+	fs.existsSync(saveFilePath) ? JSON.parse(fs.readFileSync(saveFilePath)) : DefaultSettings)
 })
 
 app.on('window-all-closed', () =>

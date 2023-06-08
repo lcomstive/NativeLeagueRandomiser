@@ -34,6 +34,7 @@
     "productName": "League Random Runes",
     "copyright": "Copyright © 2023 ${author}",
     "artifactName": "${productName}-v${version}.${os}-${arch}.${ext}",
+    "extraFiles": [ "assets" ],
     "win": {
       "target": "portable",
       "publish": [ "github" ]
