@@ -80,6 +80,8 @@ app.whenReady()
 	ipcMain.handle('saveSettings', (_, settings) =>	fs.writeFileSync(saveFilePath, JSON.stringify(settings)))
 	ipcMain.handle('loadSettings', (_) =>
 	fs.existsSync(saveFilePath) ? JSON.parse(fs.readFileSync(saveFilePath)) : DefaultSettings)
+
+	ipcMain.handle('openDebugMenu', (_) => mainWindow.openDevTools())
 })
 
 app.on('window-all-closed', () =>

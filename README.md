@@ -11,10 +11,10 @@ Generates a random champion and runes for a player to try out, this is intended 
 ## League data
 [DDragon data](https://developer.riotgames.com/docs/lol#data-dragon) is used for champion and rune icons.
 
-> To update the data, extract the `img` directory to repo `assets` folder.
-> Only the `img/champion/tiles` and `img/perk-images` folders are required.
-> 
-> You should have the folder structure so that this path is valid: `<repo>/assets/img/champion/tiles/Aatrox_0.jpg`
+To update the data, extract the `img` directory to repo `assets` folder.
+Only the `img/champion/tiles` and `img/perk-images` folders are required.
+
+You should have the folder structure so that this path is valid: `<repo>/assets/img/champion/tiles/Aatrox_0.jpg`
 
 ## Roadmap
 * [x] Randomised runes

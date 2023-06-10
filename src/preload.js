@@ -10,6 +10,8 @@ const IPCCalls =
 	saveSettings: (settings) => ipcRenderer.invoke('saveSettings', settings),
 	loadSettings: () => ipcRenderer.invoke('loadSettings'),
 
+	openDebugMenu: () => ipcRenderer.invoke('openDebugMenu'),
+
 	clientGet:   (url) => ipcRenderer.invoke('lolClientGet', url),
 	clientPut:   (url, data) => ipcRenderer.invoke('lolClientPut',   url, data),
 	clientPost:  (url, data) => ipcRenderer.invoke('lolClientPost',  url, data),

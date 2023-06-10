@@ -10,6 +10,8 @@ connector.on('connect', data =>
 {
 	clientData = data
 	console.log(`Found League client on port ${clientData.port}`)
+
+	// Combine username and password in Base64 encoding 
 	clientData.authString = btoa(`${clientData.username}:${clientData.password}`)
 })
 connector.on('disconnect', () => clientData = {})

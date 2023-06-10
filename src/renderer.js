@@ -124,12 +124,31 @@ updateRuneExporter = () =>
 	document.getElementById('runeExporter').innerHTML = html
 }
 
+findPickAction = (session) =>
+{
+	// Iterate over all possible actions
+	for(let i = 0; i < session.actions.length; i++)
+	{
+		// Actions have sub-arrays. Typically organised by action (e.g. pick, ban)
+		for(let x = 0; x < session.actions[i].length; x++)
+		{
+			let action = session.actions[i][x]
+			// If action is for the local player to pick, and currently allowed to pick, return this action
+			if(action.type == 'pick' && action.actorCellId == session.localPlayerCellId && action.isInProgress)
+				return action
+		}
+	}
+	return undefined
+}
+
 exportRunes = async () =>
 {
 	let exportButton = document.getElementById('exportButton')
 	exportButton.disabled = true
 
 	let runes = summoner.runes[Number(document.getElementById('runeSelector').value)]
+
+	console.log(`Exporting runes to page '${runes.name}': ${JSON.stringify(summoner.tempRunes.perkIds)}`)
 	
 	runes.primaryStyleId = summoner.tempRunes.primaryStyleId
 	runes.subStyleId = summoner.tempRunes.secondaryStyleId
@@ -145,30 +164,34 @@ exportRunes = async () =>
 		exportButton.disabled = false
 		return // Not in champ select
 	}
+	console.log('Game session found:')
+	console.log(champSelectSession)
 	
 	// Find action for local player
-	let action = champSelectSession.actions[0].find(x => x.type == 'pick' && x.actorCellId == champSelectSession.localPlayerCellId)
-	if(action.completed)
+	let action = findPickAction(champSelectSession)
+	if(!action)
 	{
 		exportButton.disabled = false
-		return // Already picked champion
+		return // No valid action found. Could be not ready to pick, or already picked
 	}
+	console.log('Player is currently picking:')
+	console.log(action)
 
 	let response = await window.ipc.clientPatch(`/lol-champ-select/v1/session/actions/${action.id}`, {
 		championId: summoner.tempChamp.champion.id,
 		completed: Settings.autoLockInChamp
 	})
-	if(response.errorCode) console.log(response)
+	if(response.errorCode) console.error(response)
 
 	// Select skin
 	response = await window.ipc.clientPatch('/lol-champ-select/v1/session/my-selection', {
 		selectedSkinId: summoner.tempChamp.champion.skins[summoner.tempChamp.skin].id
 	})
-	if(response.errorCode) console.log(response)
+	if(response.errorCode) console.error(response)
 
 	// Set rune page
 	response = await window.ipc.clientPut('/lol-perks/v1/currentpage', runes.id)
-	if(response.errorCode) console.log(response)
+	if(response.errorCode) console.error(response)
 	
 	exportButton.disabled = false
 }
@@ -209,6 +232,7 @@ window.addEventListener('DOMContentLoaded', async () =>
 	loadSettings()
 })
 
+// Press space to randomise
 window.addEventListener('keyup', (event) =>
 {
 	if(event.key == ' ')
