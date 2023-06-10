@@ -28,7 +28,10 @@ const createWindow = () =>
 		}
 	})
 
-	mainWindow.removeMenu()
+	// Remove top menubar in release mode
+	if(app.isPackaged)
+		mainWindow.removeMenu()
+
 	mainWindow.loadFile(path.join(__dirname, 'index.html'))
 }
 

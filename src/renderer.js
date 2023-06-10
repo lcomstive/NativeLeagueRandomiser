@@ -2,6 +2,8 @@ let runes = {}
 var summoner = {}
 let runeData = new Map()
 
+let history = []
+
 /*
 	Chooses a champion at random and returns an object containing champion data and skin index.
 	If `randomSkin` is false, skin selected is base skin (index 0)
@@ -74,7 +76,7 @@ randomRunes = () =>
 	return output
 }
 
-runeIconPath = (runeID) => runeData.get(runeID).iconPath.replace('/lol-game-data/assets/v1', '../assets/img')
+runeIconPath = (runeID) => runeData.get(runeID).iconPath.replace('/lol-game-data/assets/v1', './assets/img')
 
 const InvisibleElements = [ 'champion', 'runes' ]
 const FadeAnimationTime = 200 // Milliseconds
@@ -88,7 +90,7 @@ randomise = async () =>
 	/// CHAMPION ///
 	let championData = randomChampion(Settings.randomiseSkin)
 	summoner.tempChamp = championData
-	let skinPath = `../assets/img/champion/tiles/${championData.champion.alias}_${championData.skinPathIndex}.jpg`
+	let skinPath = `./assets/img/champion/tiles/${championData.champion.alias}_${championData.skinPathIndex}.jpg`
 	
 	// Set champion element data
 	document.getElementById('champion').innerHTML = `<img id="championIcon" src='${skinPath}' />` +
@@ -112,6 +114,12 @@ randomise = async () =>
 	runeElement.innerHTML = html
 
 	InvisibleElements.forEach(element => document.getElementById(element).classList.remove('invisible'))
+	
+	history.push({
+		runes,
+		champion: championData
+	})
+	console.log(history)
 }
 
 updateRuneExporter = () =>
